@@ -11,8 +11,11 @@ class Tree:
         print('      /       \\')
 
         # display parts
-        for part in self.parts:
-            part.display()
+        for i, part in enumerate(self.parts):
+            part.display(i)
+
+        # generate the grass
+        print('      |_______|\n\n')
 
 
 class TreePart:
@@ -25,21 +28,24 @@ class TreePart:
         """
         self.variant = variant
 
-    def display(self):
-        if self.option == 0:
-            content  = '      |       |'
-            content += '      |       |'
-            content += '      |       |'
-            print(content)
+    def display(self, i):
+        if self.variant == 0:
+            buffer  = '      |       |\n'
+            buffer += '      |       |\n'
+            buffer += '      |       |\n'
+            buffer += '      |       |  '
+            print(buffer)
 
-        elif self.option == 1:
-            content  = '  0   |       |'
-            content += ' 0 0  |       |'
-            content += '  ----|       |'
-            print(content)
+        elif self.variant == 1:
+            buffer  = '      |       |\n'
+            buffer += '  0   |       |\n'
+            buffer += ' 0 0  |       |\n'
+            buffer += '  ----|       |  '
+            print(buffer)
 
         else:
-            content  = '      |       |   0  '
-            content += '      |       |  0 0 '
-            content += '      |       |----  '
-            print(content)
+            buffer  = '      |       |      \n'
+            buffer += '      |       |   0  \n'
+            buffer += '      |       |  0 0 \n'
+            buffer += '      |       |----    '
+            print(buffer)

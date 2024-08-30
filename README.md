@@ -33,21 +33,31 @@ main.py
 ```python
 """This is the client code"""
 
+from tree_builder import TreeBuilder
+from tree_director import TreeDirector
+
 if __name__ == '__main__':
     builder: TreeBuilder = TreeBuilder()
     director: TreeDirector = TreeDirector(builder)
 
     # build a 4 sized tree with no difficulty
+    print("Building an easy tree")
     director.build(4, 0)
-    builder.result.display()
+    builder.result().display()
+    builder.reset()
 
     # build a 10 sized tree with medium difficulty
+    print("Building an medium level tree")
     director.build(10, 0.5)
-    builder.result.display()
+    builder.result().display()
+    builder.reset()
 
     # build a 100 sized tree with maximum difficulty
-    director.build(10, 1)
-    builder.result.display()
+    print("Building an maximum level tree")
+    director.build(15, 1)
+    builder.result().display()
+    builder.reset()
+
 ```
 
 tree.py
@@ -66,8 +76,11 @@ class Tree:
         print('      /       \\')
 
         # display parts
-        for part in self.parts:
-            part.display()
+        for i, part in enumerate(self.parts):
+            part.display(i)
+
+        # generate the grass
+        print('      |_______|\n\n')
 
 
 class TreePart:
@@ -80,27 +93,32 @@ class TreePart:
         """
         self.variant = variant
 
-    def display(self):
-        if self.option == 0:
-            content  = '      |       |'
-            content += '      |       |'
-            content += '      |       |'
-            print(content)
+    def display(self, i):
+        if self.variant == 0:
+            buffer  = '      |       |\n'
+            buffer += '      |       |\n'
+            buffer += '      |       |\n'
+            buffer += '      |       |  '
+            print(buffer)
 
-        elif self.option == 1:
-            content  = '  0   |       |'
-            content += ' 0 0  |       |'
-            content += '  ----|       |'
-            print(content)
+        elif self.variant == 1:
+            buffer  = '      |       |\n'
+            buffer += '  0   |       |\n'
+            buffer += ' 0 0  |       |\n'
+            buffer += '  ----|       |  '
+            print(buffer)
 
         else:
-            content  = '      |       |   0  '
-            content += '      |       |  0 0 '
-            content += '      |       |----  '
-            print(content)
+            buffer  = '      |       |      \n'
+            buffer += '      |       |   0  \n'
+            buffer += '      |       |  0 0 \n'
+            buffer += '      |       |----    '
+            print(buffer)
 ```
 
 Now we need to create the TreeBuilder, with the necessary methods to create a tree:
+
+tree_builder.py
 
 ```python
 from tree import Tree, TreePart
@@ -130,18 +148,183 @@ class TreeBuilder:
 
 Now we are going to create the Director, an object that can command a builder to create different trees:
 
-```python
+tree_director.py
 
+```python
+from tree_builder import TreeBuilder
+import random
+
+class TreeDirector:
+    def __init__(self, builder: TreeBuilder):
+        self.builder = builder
+
+    def build(self, tree_size: int, game_difficulty: int):
+        """
+        - size (int): defines how many parts will the tree have
+        - difficulty (int): a number between 0 and 1 representing the
+          percentage of tree parts that is going to have branches. Eg.:
+            - difficulty = 0, means that the tree will have no branches
+            - difficulty = 1, means that all the tree parts have branches
+        """
+        # define where the branches are
+        number_of_branches = int(tree_size * game_difficulty)
+        branches = random.sample(range(0, tree_size), number_of_branches)
+
+        # add all parts
+        for i in range(0, tree_size):
+            if i in branches:
+                if random.choice([True, False]):
+                    self.builder.add_left_branch()
+                else:
+                    self.builder.add_right_branch()
+            else:
+                self.builder.add_simple()
 ```
 
-Note that the director receive the parameter *size* that defines how many parts will the tree have and the parameter difficulty, a number between 0 and 1 representing the percentage tree parts that is going to have branches.
+Note that the director receive the parameter *size* that defines how many parts will the tree have and the parameter difficulty, a number between 0 and 1 representing the percentage of tree parts that is going to have branches.
 
 - difficulty = 0, means that the tree will have no branches
 - difficulty = 1, means that all the tree parts have branches
 
-Now let's build create some trees to see the result:
+The logic about creating branches accordingly with the difficult is all on Director's responsibilities while building the tree is on the Builder responsibilities. The Director doesn't even know what's a Tree. Now let's build create some trees to see the result:
 
 ```bash
+python main.py 
+Building an easy tree
+        _____   
+       /     \ 
+      /       \
+      |       |
+      |       |
+      |       |
+      |       |  
+      |       |
+      |       |
+      |       |
+      |       |  
+      |       |
+      |       |
+      |       |
+      |       |  
+      |       |
+      |       |
+      |       |
+      |       |  
+      |_______|
+
+
+Building an medium level tree
+        _____   
+       /     \ 
+      /       \
+      |       |
+      |       |
+      |       |
+      |       |  
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |
+      |       |
+      |       |
+      |       |  
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |
+      |       |
+      |       |
+      |       |  
+      |       |
+      |       |
+      |       |
+      |       |  
+      |       |
+  0   |       |
+ 0 0  |       |
+  ----|       |  
+      |       |
+      |       |
+      |       |
+      |       |  
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |_______|
+
+
+Building an maximum level tree
+        _____   
+       /     \ 
+      /       \
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |
+  0   |       |
+ 0 0  |       |
+  ----|       |  
+      |       |
+  0   |       |
+ 0 0  |       |
+  ----|       |  
+      |       |
+  0   |       |
+ 0 0  |       |
+  ----|       |  
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |
+  0   |       |
+ 0 0  |       |
+  ----|       |  
+      |       |
+  0   |       |
+ 0 0  |       |
+  ----|       |  
+      |       |
+  0   |       |
+ 0 0  |       |
+  ----|       |  
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |       |      
+      |       |   0  
+      |       |  0 0 
+      |       |----    
+      |_______|
 
 ```
 
