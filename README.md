@@ -10,21 +10,21 @@ The **Builder**  is a creational design pattern that that can be used to create 
 
 Do you remember the lumberjack game?
 
-![game image](/game.jpg)
+![game image](/images/game.jpg)
 
 This game was very simple, there is a ruge tree, with branches. The lumberjack can be to the left or to the right of the tree, there are just too buttons, left and right, if the player press left the lumberjack hit the tree with an axe and go to the left, else, if the right button is pressed the same hit is done but lumberjack goes to the right. Every lumberjack's hit decrease the size of the tree, all the remaining parts of the tree goes down one position.
 
 The tree is composed by parts, the parts can be a simple wood:
 
-![simple wood](/simple-wood.png)
+![simple wood](/images/simple-wood.png)
 
 A left branch:
 
-![left branch](/left-branch.png)
+![left branch](/images/left-branch.png)
 
 Or a right branch:
 
-![right-branch](/right-branch.png)
+![right-branch](/images/right-branch.png)
 
 The purpose of the game is to hit the entire tree without letting lumberjack being hit by a branch. So let's build the tree using the Builder Design Pattern. First of all we know that the client code (in this case, the game engine), is going to create the tree at some point, so we need a class tree.
 
