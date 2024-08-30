@@ -103,7 +103,29 @@ class TreePart:
 Now we need to create the TreeBuilder, with the necessary methods to create a tree:
 
 ```python
+from tree import Tree, TreePart
 
+class TreeBuilder:
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.tree = Tree()
+
+    def add_simple(self) -> None:
+        part = TreePart(0)
+        self.tree.parts.append(part)
+
+    def add_left_branch(self) -> None:
+        part = TreePart(1)
+        self.tree.parts.append(part)
+
+    def add_right_branch(self) -> None:
+        part = TreePart(2)
+        self.tree.parts.append(part)
+
+    def result(self) -> Tree:
+        return self.tree
 ```
 
 Now we are going to create the Director, an object that can command a builder to create different trees:
