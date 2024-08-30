@@ -10,7 +10,7 @@ The **Builder**  is a creational design pattern that that can be used to create 
 
 Do you remember the lumberjack game?
 
-![game image](/game.png)
+![game image](/game.jpg)
 
 This game was very simple, there is a ruge tree, with branches. The lumberjack can be to the left or to the right of the tree, there are just too buttons, left and right, if the player press left the lumberjack hit the tree with an axe and go to the left, else, if the right button is pressed the same hit is done but lumberjack goes to the right. Every lumberjack's hit decrease the size of the tree, all the remaining parts of the tree goes down one position.
 
